@@ -1,17 +1,14 @@
-import { useState,memo,useCallback,useMemo } from 'react';
+import { useState, memo, useCallback, useMemo } from 'react';
 
 import IconButton from '../UI/IconButton.jsx';
 import MinusIcon from '../UI/Icons/MinusIcon.jsx';
 import PlusIcon from '../UI/Icons/PlusIcon.jsx';
 import CounterOutput from './CounterOutput.jsx';
 import { log } from '../../log.js';
+import CounterHistory from './CounterHistory.jsx';
 
 function isPrime(number) {
-  log(
-    'Calculating if is prime number',
-    2,
-    'other'
-  );
+  log('Calculating if is prime number', 2, 'other'); // Protokollieren der Primzahlberechnung
   if (number <= 1) {
     return false;
   }
@@ -28,35 +25,46 @@ function isPrime(number) {
 }
 
 const Counter = memo(function Counter({ initialCount }) {
-  log('<Counter /> rendered', 1);
-  const initialCountIsPrime = useMemo(() => isPrime(initialCount), [initialCount]);
+  log('<Counter /> rendered', 1); // Protokollieren der Counter-Renderung
+  const initialCountIsPrime = useMemo(() => isPrime(initialCount), [initialCount]); // Überprüfen, ob der Startwert eine Primzahl ist
 
-  const [counter, setCounter] = useState(initialCount);
+  const [counter, setCounter] = useState(initialCount); // Zustand für den Zähler
+  const [counterChanges, setCounterChanges] = useState([]); // Zustand für die Zähleränderungen
 
-const handleDecrement = useCallback(function handleDecrement() {
-    setCounter((prevCounter) => prevCounter - 1);
-  },[]);
+  const handleDecrement = useCallback(() => {
+    setCounter((prevCounter) => {
+      const newCounter = prevCounter - 1;
+      setCounterChanges((prevChanges) => [...prevChanges, newCounter]);
+      return newCounter;
+    });
+  }, []);
 
-  const handleIncrement = useCallback(function handleIncrement() {
-    setCounter((prevCounter) => prevCounter + 1);
-  },[]);
+  const handleIncrement = useCallback(() => {
+    setCounter((prevCounter) => {
+      const newCounter = prevCounter + 1;
+      setCounterChanges((prevChanges) => [...prevChanges, newCounter]);
+      return newCounter;
+    });
+  }, []);
 
   return (
     <section className="counter">
       <p className="counter-info">
-        The initial counter value was <strong>{initialCount}</strong>. It{' '}
-        <strong>is {initialCountIsPrime ? 'a' : 'not a'}</strong> prime number.
+        Der anfängliche Zählerwert war <strong>{initialCount}</strong>. Es{' '}
+        <strong>ist {initialCountIsPrime ? 'eine' : 'keine'}</strong> Primzahl.
       </p>
       <p>
         <IconButton icon={MinusIcon} onClick={handleDecrement}>
-          Decrement
+          Verringern
         </IconButton>
         <CounterOutput value={counter} />
         <IconButton icon={PlusIcon} onClick={handleIncrement}>
-          Increment
+          Erhöhen
         </IconButton>
       </p>
+      <CounterHistory history={counterChanges} /> {/* Zählerhistorie */}
     </section>
   );
-})
+});
+
 export default Counter;

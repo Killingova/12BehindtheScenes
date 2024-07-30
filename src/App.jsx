@@ -6,20 +6,21 @@ import { log } from './log.js';
 import ConfigureCounter from './components/Counter/ConfigureCounter.jsx';
 
 function App() {
-  log('<App /> rendered');
+  log('<App /> rendered'); // Protokollieren der App-Renderung
 
-  const [chosenCount, setChosenCount] = useState(0);
+  const [chosenCount, setChosenCount] = useState(0); // Zustand für den ausgewählten Zählerwert
 
-  function handleSetCount(newCount) {  // Fix typo: handelSetCount to handleSetCount
-    setChosenCount(newCount);
+  function handleSetCount(newCount) {
+    setChosenCount(newCount); // Aktualisieren des Zählerwerts
   }
 
   return (
     <>
       <Header />
       <main>
-        <ConfigureCounter onSet={handleSetCount}/>  {/* Fix typo: handelSetCount to handleSetCount */}
-        <Counter initialCount={chosenCount} />
+        <ConfigureCounter onSet={handleSetCount}/> 
+        <Counter initialCount={chosenCount} /> {/* Der erste Zähler mit gewähltem Startwert */}
+        <Counter initialCount={0} /> {/* Ein zusätzlicher Zähler mit Startwert 0 */}
       </main>
     </>
   );
